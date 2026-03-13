@@ -24,7 +24,7 @@ export async function sendCapsuleEmail(capsule) {
 
     // 4. Resend API Call
     const { data, error } = await resend.emails.send({
-      from: "FutureCapsule <hello@yourverifieddomain.com>", // Update this once domain is verified
+      from: "FutureCapsule <onboarding@resend.dev>", // Update this once domain is verified
       to: recipientEmail,
       subject: `📜 A message from your past self: ${capsule.title || "Untitled"}`,
       html: `
