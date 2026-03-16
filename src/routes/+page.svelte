@@ -1,190 +1,130 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Future Self Capsule</title>
-    <style>
-        :root {
-            --primary: #2563eb;
-            --primary-hover: #1d4ed8;
-            --text-dark: #1f2937;
-            --text-light: #4b5563;
-            --bg-accent: #f3f4f6;
-            --white: #ffffff;
-        }
+<script lang="ts">
+  import { supabase } from '$lib/supabase';
+  import { onMount } from 'svelte';
+  import { fade, slide } from 'svelte/transition';
 
-        body {
-            font-family: 'Inter', system-ui, -apple-system, sans-serif;
-            color: var(--text-dark);
-            line-height: 1.6;
-            margin: 0;
-            padding: 0 20px;
-        }
+  let searchTerm = '';
+  let stores: any[] = [];
+  let loading = true;
 
-        /* Hero Section */
-        .hero {
-            text-align: center;
-            padding: 100px 0 60px;
-            max-width: 800px;
-            margin: 0 auto;
-        }
+  onMount(async () => {
+    const { data } = await supabase
+      .from('stores')
+      .select('*')
+      .eq('is_verified', true) // Focus on the quality stores first
+      .order('name', { ascending: true });
+    
+    stores = data || [];
+    loading = false;
+  });
 
-        .hero h1 {
-            font-size: clamp(2.5rem, 5vw, 4rem);
-            line-height: 1.1;
-            margin-bottom: 20px;
-            background: linear-gradient(to right, var(--primary), #6366f1);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .hero p {
-            font-size: 1.2rem;
-            color: var(--text-light);
-            max-width: 600px;
-            margin: 0 auto 40px;
-        }
-
-        .cta-button {
-            background-color: var(--primary);
-            color: var(--white);
-            padding: 16px 32px;
-            border: none;
-            border-radius: 50px;
-            font-size: 1.1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: transform 0.2s, background-color 0.2s;
-            text-decoration: none;
-            display: inline-block;
-        }
-
-        .cta-button:hover {
-            background-color: var(--primary-hover);
-            transform: translateY(-2px);
-        }
-
-        /* Stats Section */
-        .stats {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-            max-width: 1000px;
-            margin: 0 auto 100px;
-            background: var(--bg-accent);
-            padding: 40px;
-            border-radius: 24px;
-            text-align: center;
-        }
-
-        .stats h2 {
-            font-size: 2.5rem;
-            margin: 0;
-            color: var(--primary);
-        }
-
-        .stats p {
-            margin: 5px 0 0;
-            font-weight: 500;
-            color: var(--text-light);
-        }
-
-        /* How It Works Section */
-        .how {
-            max-width: 1100px;
-            margin: 0 auto 100px;
-            text-align: center;
-        }
-
-        .how h2 {
-            font-size: 2rem;
-            margin-bottom: 50px;
-        }
-
-        .steps {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 30px;
-        }
-
-        .step-card {
-            padding: 40px 30px;
-            background: var(--white);
-            border: 1px solid #e5e7eb;
-            border-radius: 20px;
-            transition: box-shadow 0.3s;
-        }
-
-        .step-card:hover {
-            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1);
-        }
-
-        .step-number {
-            display: inline-block;
-            width: 40px;
-            height: 40px;
-            line-height: 40px;
-            background: var(--bg-accent);
-            color: var(--primary);
-            border-radius: 50%;
-            font-weight: bold;
-            margin-bottom: 20px;
-        }
-
-        h3 {
-            margin-bottom: 15px;
-        }
-
-        /* Mobile Adjustments */
-        @media (max-width: 600px) {
-            .hero { padding: 60px 0; }
-            .stats { padding: 20px; }
-        }
-    </style>
-</head>
-<body>
+  // Reactive filtering logic
+  $: filtered = stores.filter(s => 
+    s.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
+    s.handle.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+</script>
 
 <section class="hero">
-    <h1>Send a message to your future self</h1>
-    <p>
-        Create a personal capsule containing your goals, reflections, and prayers. 
-        One day your past self will speak to you again.
-    </p>
-    <a href="/create" class="cta-button">Create Your Capsule</a>
+  <h1>Shop safely from <span>TikTok</span> stores</h1>
+  
+  <p>
+    Verify business legitimacy, check verification status, and avoid scams in Kenya's social commerce.
+  </p>
+
+  <div class="search-container">
+    <input 
+      type="text" 
+      bind:value={searchTerm}
+      placeholder="Search shop name or @handle..." 
+      class="search-input"
+    />
+    
+    {#if searchTerm === ''}
+      <div transition:fade={{ duration: 200 }} style="margin-top: 32px;">
+        <a href="/request" class="btn-cta">Get Your Store Verified</a>
+      </div>
+    {/if}
+  </div>
 </section>
 
-<section class="stats">
-    <div>
-        <h2>400+</h2>
-        <p>Capsules created in Kenya</p>
-    </div>
-    <div>
-        <h2>120+</h2>
-        <p>Letters delivered</p>
-    </div>
-</section>
+{#if searchTerm !== ''}
+  <div class="directory-container" transition:slide>
+    {#each filtered as store (store.id)}
+      <a href="/store/{store.id}" class="card">
+        <div class="card-content">
+          <div class="store-info">
+            <span class="store-name">{store.name}</span>
+            <span class="store-handle">@{store.handle} • {store.platform}</span>
+          </div>
+          <span class="badge badge-verified">Verified</span>
+        </div>
+      </a>
+    {:else}
+      <div class="no-results" in:fade>
+        <p>No verified stores found for "{searchTerm}"</p>
+        <a href="/request" style="color: var(--primary-blue); font-weight: 700;">Suggest this store for verification →</a>
+      </div>
+    {/each}
+  </div>
+{/if}
 
-<section class="how">
-    <h2>How it works</h2>
-    <div class="steps">
-        <div class="step-card">
-            <span class="step-number">1</span>
-            <h3>Write</h3>
-            <p>Write a letter to your future self and describe your hopes and dreams.</p>
-        </div>
-        <div class="step-card">
-            <span class="step-number">2</span>
-            <h3>Store</h3>
-            <p>Your capsule is securely stored until the date you choose.</p>
-        </div>
-        <div class="step-card">
-            <span class="step-number">3</span>
-            <h3>Receive</h3>
-            <p>When the moment arrives, your past self receives your message.</p>
-        </div>
-    </div>
-</section>
+<style>
+  .search-container {
+    width: 100%;
+    max-width: 540px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
 
-</body>
-</html>
+  .card-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .store-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    text-align: left;
+  }
+
+  .store-name {
+    font-weight: 800;
+    font-size: 1.1rem;
+    color: var(--text-dark);
+  }
+
+  .store-handle {
+    color: var(--text-light);
+    font-size: 0.85rem;
+    font-weight: 500;
+  }
+
+  .no-results {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--text-light);
+    font-size: 0.95rem;
+  }
+
+  /* Specific Card hover for directory */
+  .card {
+    padding: 24px;
+    margin-bottom: 12px;
+    background: white;
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    text-decoration: none;
+    display: block;
+    transition: var(--transition);
+  }
+
+  .card:hover {
+    border-color: var(--primary-blue);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.04);
+  }
+</style>
