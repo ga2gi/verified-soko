@@ -55,7 +55,18 @@
 
       if (error) throw error;
 
-      // 3. Success!
+      // 3. SEND CONFIRMATION EMAIL
+      // We call our internal API route which handles the Resend logic safely
+      await fetch('/api/send-email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: email,
+          unlockDate: date
+        })
+      });
+
+      // 4. Success!
       goto('/sent');
 
     } catch (err) {
@@ -127,7 +138,6 @@
 </section>
 
 <style>
-  /* Styles remain exactly as you have them */
   .create-container { padding: 60px 20px; display: flex; justify-content: center; background: #f1f5f9; }
   .form-card { width: 100%; max-width: 750px; }
   .form-header { text-align: center; margin-bottom: 50px; }
