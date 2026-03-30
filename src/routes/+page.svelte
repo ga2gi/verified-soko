@@ -1,130 +1,81 @@
-<script lang="ts">
-  import { supabase } from '$lib/supabase';
-  import { onMount } from 'svelte';
-  import { fade, slide } from 'svelte/transition';
-
-  let searchTerm = '';
-  let stores: any[] = [];
-  let loading = true;
-
-  onMount(async () => {
-    const { data } = await supabase
-      .from('stores')
-      .select('*')
-      .eq('is_verified', true) // Focus on the quality stores first
-      .order('name', { ascending: true });
-    
-    stores = data || [];
-    loading = false;
-  });
-
-  // Reactive filtering logic
-  $: filtered = stores.filter(s => 
-    s.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
-    s.handle.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-</script>
-
 <section class="hero">
-  <h1>Shop safely from <span>TikTok</span> stores</h1>
+  <div class="announcement">Now live in Nairobi 🇰🇪</div>
+  <h1>Talk to the version of you that <span class="blue-text">hasn't arrived yet.</span></h1>
+  <p>Write a letter today. We'll lock it in our digital vault and deliver it to your inbox years from now.</p>
   
-  <p>
-    Verify business legitimacy, check verification status, and avoid scams in Kenya's social commerce.
-  </p>
-
-  <div class="search-container">
-    <input 
-      type="text" 
-      bind:value={searchTerm}
-      placeholder="Search shop name or @handle..." 
-      class="search-input"
-    />
-    
-    {#if searchTerm === ''}
-      <div transition:fade={{ duration: 200 }} style="margin-top: 32px;">
-        <a href="/request" class="btn-cta">Get Your Store Verified</a>
-      </div>
-    {/if}
+  <div class="cta-group">
+    <a href="/create" class="main-cta">Start Writing ✍️</a>
+    <a href="/about" class="secondary-cta">How it works?</a>
   </div>
 </section>
 
-{#if searchTerm !== ''}
-  <div class="directory-container" transition:slide>
-    {#each filtered as store (store.id)}
-      <a href="/store/{store.id}" class="card">
-        <div class="card-content">
-          <div class="store-info">
-            <span class="store-name">{store.name}</span>
-            <span class="store-handle">@{store.handle} • {store.platform}</span>
-          </div>
-          <span class="badge badge-verified">Verified</span>
-        </div>
-      </a>
-    {:else}
-      <div class="no-results" in:fade>
-        <p>No verified stores found for "{searchTerm}"</p>
-        <a href="/request" style="color: var(--primary-blue); font-weight: 700;">Suggest this store for verification →</a>
-      </div>
-    {/each}
-  </div>
-{/if}
-
 <style>
-  .search-container {
-    width: 100%;
-    max-width: 540px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .card-content {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-
-  .store-info {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    text-align: left;
-  }
-
-  .store-name {
-    font-weight: 800;
-    font-size: 1.1rem;
-    color: var(--text-dark);
-  }
-
-  .store-handle {
-    color: var(--text-light);
-    font-size: 0.85rem;
-    font-weight: 500;
-  }
-
-  .no-results {
+  .hero {
+    max-width: 900px;
+    margin: 100px auto;
     text-align: center;
-    padding: 40px 20px;
-    color: var(--text-light);
-    font-size: 0.95rem;
+    padding: 0 20px;
   }
 
-  /* Specific Card hover for directory */
-  .card {
-    padding: 24px;
-    margin-bottom: 12px;
-    background: white;
-    border: 1px solid var(--border-color);
+  .announcement {
+    display: inline-block;
+    background: black;
+    color: white;
+    padding: 6px 16px;
+    border-radius: 8px;
+    font-weight: 800;
+    font-size: 0.85rem;
+    margin-bottom: 25px;
+  }
+
+  h1 {
+    font-size: clamp(3rem, 7vw, 5.5rem);
+    font-weight: 900;
+    line-height: 0.9;
+    margin-bottom: 30px;
+    letter-spacing: -3px;
+  }
+
+  .blue-text {
+    color: #2563eb;
+  }
+
+  p {
+    font-size: 1.3rem;
+    color: #334155;
+    max-width: 600px;
+    margin: 0 auto 50px;
+    line-height: 1.5;
+  }
+
+  .cta-group {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+  }
+
+  .main-cta {
+    background: #2563eb;
+    color: white;
+    padding: 20px 40px;
     border-radius: 16px;
+    font-weight: 800;
+    font-size: 1.2rem;
     text-decoration: none;
-    display: block;
-    transition: var(--transition);
+    border: 4px solid black;
+    box-shadow: 6px 6px 0px black;
+    transition: 0.2s;
   }
 
-  .card:hover {
-    border-color: var(--primary-blue);
-    transform: translateY(-2px);
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.04);
+  .main-cta:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 10px 10px 0px black;
+  }
+
+  .secondary-cta {
+    padding: 20px 40px;
+    font-weight: 800;
+    text-decoration: none;
+    color: black;
   }
 </style>

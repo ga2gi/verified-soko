@@ -1,5 +1,5 @@
 {
-	"name": "verified-soko-hub",
+	"name": "future-capsule",
 	"private": true,
 	"version": "0.0.1",
 	"type": "module",
@@ -23,6 +23,7 @@
 	"dependencies": {
 		"@neoconfetti/svelte": "^2.2.2",
 		"@supabase/supabase-js": "^2.97.0",
+		"lucide-svelte": "^1.0.1",
 		"resend": "^6.9.3"
 	}
 }
