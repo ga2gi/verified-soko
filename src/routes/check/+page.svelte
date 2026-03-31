@@ -29,12 +29,15 @@
     month: 'short',
     year: 'numeric'
   });
+
+  // Helper to check if a capsule is ready to be opened
+  const isUnlocked = (dateStr) => new Date() >= new Date(dateStr);
 </script>
 
 <section class="check-container">
   <div class="search-box">
     <h1>Is there mail <span class="blue-text">waiting?</span></h1>
-    <p>Enter your email to see your scheduled time-travel deliveries.</p>
+    <p>Enter your email to see your scheduled time-travel deliveries. <b>You can read your capsules here once they unlock.</b></p>
     
     <div class="input-row">
       <input 
@@ -52,10 +55,15 @@
       <div class="results-area">
         {#if results.length > 0}
           <div class="success-banner">✨ Found {results.length} Capsules in the Vault</div>
+          
+          <div class="instruction-text">
+            Click on an unlocked 📦 to read your message from the past.
+          </div>
+
           <div class="capsule-grid">
             {#each results as capsule}
-              <a href="/unlock/{capsule.id}" class="capsule-link">
-                <div class="capsule-card">
+              <a href="/unlock/{capsule.id}" class="capsule-link" class:disabled-link={!isUnlocked(capsule.unlock_date)}>
+                <div class="capsule-card" class:locked-border={!isUnlocked(capsule.unlock_date)}>
                   <div class="card-icon">📦</div>
                   <div class="card-info">
                     <span class="label">Unlocks On:</span>
@@ -63,7 +71,7 @@
                   </div>
                   
                   <div class="action-area">
-                    {#if new Date() >= new Date(capsule.unlock_date)}
+                    {#if isUnlocked(capsule.unlock_date)}
                       <div class="status-btn unlocked">Open Vault 🔓</div>
                     {:else}
                       <div class="status-badge locked">Locked 🔒</div>
@@ -95,12 +103,16 @@
   button { background: #2563eb; color: white; border: 4px solid black; padding: 0 40px; border-radius: 15px; font-weight: 900; cursor: pointer; box-shadow: 4px 4px 0px black; }
   button:disabled { background: #ccc; cursor: not-allowed; }
 
-  .success-banner { background: #dcfce7; border: 3px solid black; padding: 15px; border-radius: 12px; font-weight: 800; margin-bottom: 30px; }
+  .success-banner { background: #dcfce7; border: 3px solid black; padding: 15px; border-radius: 12px; font-weight: 800; margin-bottom: 10px; }
+  .instruction-text { font-weight: 700; color: #475569; margin-bottom: 30px; font-size: 0.95rem; }
 
   .capsule-grid { display: grid; gap: 20px; text-align: left; }
   
   .capsule-link { text-decoration: none; color: inherit; display: block; transition: transform 0.1s; }
-  .capsule-link:hover { transform: translateY(-3px); }
+  .capsule-link:hover:not(.disabled-link) { transform: translateY(-3px); }
+  
+  /* Disable interaction for locked capsules */
+  .disabled-link { cursor: default; pointer-events: none; }
 
   .capsule-card { 
     background: white; 
@@ -112,12 +124,18 @@
     gap: 20px;
     box-shadow: 8px 8px 0px black;
   }
+
+  .locked-border {
+    border-color: #94a3b8;
+    box-shadow: 8px 8px 0px #cbd5e1;
+    background: #f8fafc;
+  }
+
   .card-icon { font-size: 2rem; }
   .card-info { flex: 1; display: flex; flex-direction: column; }
   .label { font-size: 0.8rem; font-weight: 800; text-transform: uppercase; color: #64748b; }
   .date { font-size: 1.4rem; font-weight: 900; }
 
-  /* NEW BUTTON & BADGE STYLES */
   .status-btn.unlocked {
     background: #2563eb;
     color: white;
