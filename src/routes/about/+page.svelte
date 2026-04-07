@@ -22,7 +22,7 @@
             <div class="step-card">
                 <span class="number">02</span>
                 <h3>Seal the Vault</h3>
-                <p>Pick an unlock date (1 to 20 years away). Secure your account with a <strong>one-time KES 1,000 contribution</strong>. This single payment unlocks <strong>unlimited</strong> future capsules for life.</p>
+                <p>Pick an unlock date (1 to 20 years away). Secure your account with a <strong>one-time KES 2,000 contribution</strong>. This single payment unlocks <strong>unlimited</strong> future capsules for life.</p>
                 <div class="mpesa-info">
                     <small>Pay via Paybill: <strong>400200</strong><br/>Acc: <strong>25476843891101</strong></small>
                 </div>
@@ -37,7 +37,7 @@
 
         <div class="cta-section">
             <a href="/create" class="cta-button">Begin Your First Capsule</a>
-            <p class="cta-note">KES 1,000 • Pay once, send forever • 🇰🇪 M-Pesa Secure</p>
+            <p class="cta-note">KES 2,000 • Pay once, send forever • 🇰🇪 M-Pesa Secure</p>
         </div>
 
         <div class="faq">
@@ -61,7 +61,7 @@
                     <li>Select <b>Paybill</b></li>
                     <li>Enter Business No: <b>400200</b> (Co-op Bank)</li>
                     <li>Enter Account No: <b>25476843891101</b></li>
-                    <li>Enter Amount: <b>1,000</b></li>
+                    <li>Enter Amount: <b>2,000</b></li>
                     <li>Paste the confirmation code back on our site.</li>
                 </ol>
             </details>

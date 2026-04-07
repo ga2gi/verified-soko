@@ -10,7 +10,7 @@
   <div class="action-box">
     <a href="/create" class="main-button shadow">Create Your First Capsule</a>
     <div class="payment-info">
-      <span class="price">KES 1,000 / Lifetime Access</span>
+      <span class="price">KES 2,000 / Lifetime Access</span>
       <span class="tag">Pay once. Unlock unlimited capsules forever.</span>
     </div>
   </div>
